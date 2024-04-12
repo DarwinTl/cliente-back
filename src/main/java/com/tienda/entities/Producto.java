@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -25,10 +26,13 @@ public class Producto {
 	@Column(name = "id_esta")
 	private int estado;
 	@ManyToOne
+	@JoinColumn(name = "id_marc")
 	private Marca marca;
 	@ManyToOne
+	@JoinColumn(name = "id_cate")
 	private Categoria categoria;
 	@ManyToOne
+	@JoinColumn(name = "id_unid_medi")
 	private UnidadMedida medida;
 
 	public int getId() {

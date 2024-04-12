@@ -1,13 +1,10 @@
 package com.tienda.entities;
 
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,9 +19,6 @@ public class Marca {
 	private String nombre;
 	@Column(name = "de_marc")
 	private String detalle;
-
-	@OneToMany(mappedBy = "marca")
-	private List<Producto> productos;
 
 	public int getId() {
 		return id;
@@ -48,14 +42,6 @@ public class Marca {
 
 	public void setDetalle(String detalle) {
 		this.detalle = detalle;
-	}
-
-	public List<Producto> getProductos() {
-		return productos;
-	}
-
-	public void setProductos(List<Producto> productos) {
-		this.productos = productos;
 	}
 
 	public Marca() {
