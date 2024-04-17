@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tienda.entities.Marca;
 import com.tienda.services.IMarcaService;
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/tienda")
 public class MarcaController {
@@ -75,16 +76,18 @@ public class MarcaController {
 
 	@PutMapping("/marcas/{id}")
 	public ResponseEntity<?> update(@RequestBody Marca marca, @PathVariable int id) {
-		Marca marcaActual = (Marca) marcaService.findMarca(id).get();
+		Optional<Marca> optionalActual = marcaService.findMarca(id);
 		Map<String, Object> response = new HashMap<>();
 		Marca marcaActualizada = null;
+		Marca marcaActual = null;
 
-		if (marcaActual == null) {
+		if (!optionalActual.isPresent()) {
 			response.put("mensaje", "Error al actualizar, la marca con id  " + id + " no existe");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
+			marcaActual = optionalActual.get();
 			marcaActual.setNombre(marca.getNombre());
 			marcaActual.setDetalle(marca.getDetalle());
 

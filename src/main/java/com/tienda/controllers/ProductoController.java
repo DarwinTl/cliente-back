@@ -19,106 +19,113 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tienda.entities.UnidadMedida;
-import com.tienda.services.IUnidadMedidaService;
+import com.tienda.entities.Producto;
+import com.tienda.services.IProductoService;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/tienda")
-public class UnidadMedidaController {
+public class ProductoController {
 
 	@Autowired
-	private IUnidadMedidaService unidadMedidaService;
+	private IProductoService productoService;
 
-	@GetMapping("/unidades")
-	public List<UnidadMedida> getUnidades() {
-		return unidadMedidaService.getUnidadesMedida();
+	@GetMapping("/productos")
+	public List<Producto> findAll() {
+		return productoService.getProductos();
 	}
 
-	@GetMapping("/unidades/{id}")
+	@GetMapping("/productos/{id}")
 	public ResponseEntity<?> find(@PathVariable int id) {
-		Optional<UnidadMedida> medida = null;
+		Optional<Producto> producto = null;
 		Map<String, Object> response = new HashMap<>();
 
 		try {
-			medida = unidadMedidaService.findUnidadMedida(id);
+			producto = productoService.findById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar consulta en la BD");
 			response.put("error", e.getMessage() + " " + e.getMostSpecificCause().getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		if (!medida.isPresent()) {
-			response.put("mensaje", "La Unidad de medidad con ID " + id + " no existe en la BD");
+		if (!producto.isPresent()) {
+			response.put("mensaje", "El producto con ID " + id + " no existe en la BD");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<UnidadMedida>(medida.get(), HttpStatus.OK);
+		return new ResponseEntity<Producto>(producto.get(), HttpStatus.OK);
 	}
 
-	@PostMapping("/unidades")
-	public ResponseEntity<?> save(@RequestBody UnidadMedida medida) {
-		UnidadMedida medidaNueva = null;
+	@PostMapping("/productos")
+	public ResponseEntity<?> save(@RequestBody Producto producto) {
+		Producto productoNuevo = null;
 		Map<String, Object> response = new HashMap<>();
 
 		try {
-			medidaNueva = unidadMedidaService.save(medida);
+			productoNuevo = productoService.save(producto);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar consulta en la BD");
 			response.put("error", e.getMessage() + " " + e.getMostSpecificCause().getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "Unidadad de medida creada con exito");
-		response.put("unidad", medidaNueva);
+
+		response.put("mensaje", "Producto registrado");
+		response.put("producto", productoNuevo);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/unidades/{id}")
-	public ResponseEntity<?> update(@RequestBody UnidadMedida medida, @PathVariable int id) {
-
-		UnidadMedida medidaActual = unidadMedidaService.findUnidadMedida(id).get();
+	@PutMapping("/productos/{id}")
+	public ResponseEntity<?> update(@RequestBody Producto producto, @PathVariable int id) {
+		Optional<Producto> optionalActual = productoService.findById(id);
 		Map<String, Object> response = new HashMap<>();
-		UnidadMedida medidaActualizada = null;
+		Producto productoActualizado = null;
+		Producto productoActual = null;
 
-		if (medidaActual == null) {
-			response.put("mensaje", "La Unidad de medidad con ID " + id + " no existe en la BD");
+		if (!optionalActual.isPresent()) {
+			response.put("mensaje", "El producto con ID " + id + " no existe en la BD");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			medidaActual.setDescripcion(medida.getDescripcion());
-			medidaActualizada = unidadMedidaService.save(medidaActual);
+			productoActual = optionalActual.get();
+			productoActual.setCategoria(producto.getCategoria());
+			productoActual.setDescripcion(producto.getDescripcion());
+			productoActual.setEstado(producto.getEstado());
+			productoActual.setMarca(producto.getMarca());
+			productoActual.setMedida(producto.getMedida());
+			productoActual.setNombre(producto.getNombre());
+			productoActual.setRuta(producto.getRuta());
+
+			productoActualizado = productoService.save(productoActual);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar consulta en la BD");
 			response.put("error", e.getMessage() + " " + e.getMostSpecificCause().getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		response.put("mensaje", "Unidadad de medida creada con exito");
-		response.put("unidad", medidaActualizada);
-
+		response.put("mensaje", "Producto Modificado");
+		response.put("producto", productoActualizado);
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/unidades/{id}")
+	@DeleteMapping("/productos/{id}")
 	public ResponseEntity<?> delete(@PathVariable int id) {
-		UnidadMedida medida = unidadMedidaService.findUnidadMedida(id).get();
+		Producto producto = productoService.findById(id).get();
 		Map<String, Object> response = new HashMap<>();
 
-		if (medida == null) {
-			response.put("mensaje", "La categoria con ID " + id + " no existe en la BD");
+		if (producto == null) {
+			response.put("mensaje", "El producto con ID " + id + " no existe en la BD");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			unidadMedidaService.deleteById(id);
+			productoService.deleteById(id);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar consulta en la BD");
 			response.put("error", e.getMessage() + " " + e.getMostSpecificCause().getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.put("mensaje", "Unidad de medida eliminada");
-
+		response.put("mensaje", "Producto borrado");
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 
