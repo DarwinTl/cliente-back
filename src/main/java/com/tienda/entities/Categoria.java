@@ -16,7 +16,7 @@ public class Categoria {
 	@Column(name = "id_cate")
 	private int id;
 
-	@Column(name = "de_cate")
+	@Column(name = "de_cate", unique = true)
 	private String detalle;
 
 	public int getId() {

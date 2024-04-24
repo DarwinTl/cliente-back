@@ -15,7 +15,7 @@ public class UnidadMedida {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_unid_medi")
 	private int id;
-	@Column(name = "de_unid_medi")
+	@Column(name = "de_unid_medi", unique = true)
 	private String descripcion;
 
 	public int getId() {

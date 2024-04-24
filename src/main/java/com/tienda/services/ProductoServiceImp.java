@@ -36,4 +36,9 @@ public class ProductoServiceImp implements IProductoService {
 
 	}
 
+	@Override
+	public List<Producto> getProductos(String categoria) {
+		return productoDao.listByCategoria(categoria);
+	}
+
 }

@@ -15,7 +15,7 @@ public class Marca {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_marc")
 	private int id;
-	@Column(name = "no_marc")
+	@Column(name = "no_marc",  unique = true)
 	private String nombre;
 	@Column(name = "de_marc")
 	private String detalle;

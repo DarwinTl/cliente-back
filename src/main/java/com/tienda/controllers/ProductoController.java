@@ -1,5 +1,6 @@
 package com.tienda.controllers;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tienda.entities.Producto;
 import com.tienda.services.IProductoService;
+import com.tienda.services.UploadFileService;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/tienda")
@@ -29,9 +34,17 @@ public class ProductoController {
 	@Autowired
 	private IProductoService productoService;
 
+	@Autowired
+	private UploadFileService uploadFileService;
+
 	@GetMapping("/productos")
 	public List<Producto> findAll() {
 		return productoService.getProductos();
+	}
+
+	@GetMapping("/productos/categorias/{categoria}")
+	public List<Producto> findAll(@PathVariable String categoria) {
+		return productoService.getProductos(categoria);
 	}
 
 	@GetMapping("/productos/{id}")
@@ -55,12 +68,53 @@ public class ProductoController {
 		return new ResponseEntity<Producto>(producto.get(), HttpStatus.OK);
 	}
 
+	@PostMapping("/productos-foto")
+	public ResponseEntity<?> cargar(@RequestParam("foto") MultipartFile foto, @RequestParam("id") int id)
+			throws IOException {
+		Map<String, Object> response = new HashMap<>();
+
+		Producto producto = productoService.findById(id).get();
+
+		if (!foto.isEmpty()) {
+			String archivo = uploadFileService.guardarImagen(foto);
+			producto.setRuta(archivo);
+			productoService.save(producto);
+			response.put("producto", producto);
+			response.put("mensaje", "Imagen subida");
+		}
+
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}
+
+	@PostMapping("/productos-fotoss")
+	public ResponseEntity<?> save(Producto producto, @RequestParam(name = "foto") MultipartFile foto)
+			throws IOException {
+		Producto productoNuevo = null;
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			String nombreImagen = uploadFileService.guardarImagen(foto);
+			producto.setRuta(nombreImagen);
+			productoNuevo = productoService.save(producto);
+		} catch (DataAccessException e) {
+			response.put("mensaje", "Error al realizar consulta en la BD");
+			response.put("error", e.getMessage() + " " + e.getMostSpecificCause().getMessage());
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		response.put("mensaje", "Producto registrado");
+		response.put("producto", productoNuevo);
+
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}
+
 	@PostMapping("/productos")
 	public ResponseEntity<?> save(@RequestBody Producto producto) {
 		Producto productoNuevo = null;
 		Map<String, Object> response = new HashMap<>();
 
 		try {
+
 			productoNuevo = productoService.save(producto);
 		} catch (DataAccessException e) {
 			response.put("mensaje", "Error al realizar consulta en la BD");
@@ -87,6 +141,8 @@ public class ProductoController {
 		}
 
 		try {
+			productoActual = optionalActual.get();
+
 			productoActual = optionalActual.get();
 			productoActual.setCategoria(producto.getCategoria());
 			productoActual.setDescripcion(producto.getDescripcion());
