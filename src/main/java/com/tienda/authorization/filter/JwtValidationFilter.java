@@ -34,39 +34,37 @@ public class JwtValidationFilter extends BasicAuthenticationFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
-		String header=request.getHeader(HEADER_AUTHORIZATION);
-		
-		if (header==null || header.startsWith(PREFIX_TOKEN)) {
+
+		String header = request.getHeader(HEADER_AUTHORIZATION);
+
+		if (header == null || !header.startsWith(PREFIX_TOKEN)) {
 			chain.doFilter(request, response);
+			return;
 		}
-		String token= header.replace(PREFIX_TOKEN,"");
+		String token = header.replace(PREFIX_TOKEN, "");
 		try {
-			Claims claims=Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload();
-			String usuario= claims.getSubject();
-			//String usuario2=(String) claims.get("username");
-			Object authoritiesClaimns=claims.get("authorities");
-			
-			Collection<? extends  GrantedAuthority> roles=Arrays.asList(new ObjectMapper()
-					.addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class)
-					.readValue(authoritiesClaimns.toString().getBytes(), SimpleGrantedAuthority[].class));
-			UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(usuario,roles);
-			
+			Claims claims = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload();
+			String usuario = claims.getSubject();
+			// String usuario2=(String) claims.get("username");
+			Object authoritiesClaimns = claims.get("authorities");
+
+			Collection<? extends GrantedAuthority> roles = Arrays.asList(
+					new ObjectMapper().addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityJsonCreator.class)
+							.readValue(authoritiesClaimns.toString().getBytes(), SimpleGrantedAuthority[].class));
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usuario,
+					null, roles);
+
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 			chain.doFilter(request, response);
 		} catch (JwtException e) {
-			Map<String, String> body= new HashMap<>();
-			body.put("error",e.getMessage());
+			Map<String, String> body = new HashMap<>();
+			body.put("error", e.getMessage());
 			body.put("mensaje", "Token no valido");
 			response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 			response.setStatus(401);
 			response.setContentType(CONTENT_TYPE);
 		}
-		
+
 	}
-	
-	
-	
-	
 
 }
