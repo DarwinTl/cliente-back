@@ -44,13 +44,15 @@ public class SpringSecurityConfiguration {
 			
 			return http.authorizeHttpRequests( auth ->
  					auth
- 					
- 					.requestMatchers(HttpMethod.GET,"/tienda/productos").permitAll()
- 					.requestMatchers(HttpMethod.GET, "/tienda/categorias").hasRole("ADMIN")
- 					.requestMatchers(HttpMethod.GET, "/tienda/marcas").hasRole("USER")
+ 					.requestMatchers(/*HttpMethod.GET,"/tienda/productos",*/HttpMethod.GET, "/tienda/categorias","/tienda/images/img/**","/images/**").permitAll()
+ 				//	.requestMatchers(HttpMethod.GET, "/tienda/categorias").hasRole("ADMIN")
+ 					.requestMatchers(HttpMethod.GET, "/tienda/productos").hasRole("ADMIN")
+ 					.requestMatchers(HttpMethod.POST, "/tienda/categorias").hasRole("ADMIN")
+ 					.requestMatchers(HttpMethod.POST, "/tienda/productos/crear").hasRole("ADMIN")
+ 					.requestMatchers(HttpMethod.GET, "/tienda/marcas").hasRole("ADMIN")
  					.requestMatchers(HttpMethod.GET, "/tienda/productos/{id}").hasRole("ADMIN")
  					.requestMatchers(HttpMethod.GET,"/tienda/productos/categorias/{categoria}").hasAnyRole("USER","ADMIN")
- 					.requestMatchers(HttpMethod.DELETE,"/tienda//productos/{id}").hasRole("ADMIN")
+ 					.requestMatchers(HttpMethod.DELETE,"/tienda/productos/{id}").hasRole("ADMIN")
  					.anyRequest().authenticated())
 					.cors(cors->cors.configurationSource(configurationSource()))
 					.addFilter(new  JwtAuthenticationFilter(authenticationManager()))
