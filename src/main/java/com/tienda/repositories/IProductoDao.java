@@ -11,7 +11,7 @@ import com.tienda.entities.Producto;
 @Repository
 public interface IProductoDao extends JpaRepository<Producto, Integer> {
 
-	@Query("select  p from Producto p where p.categoria.detalle=?1")
-	List<Producto> listByCategoria(String categoria); 
+	@Query("select  p from Producto p where p.categoria.id=?1")
+	List<Producto> listByCategoria(int categoria); 
 
 }

@@ -23,18 +23,18 @@ import com.tienda.entities.UnidadMedida;
 import com.tienda.services.IUnidadMedidaService;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/tienda")
+@RequestMapping("/api/mantenimiento/unidades")
 public class UnidadMedidaController {
 
 	@Autowired
 	private IUnidadMedidaService unidadMedidaService;
 
-	@GetMapping("/unidades")
+	@GetMapping()
 	public List<UnidadMedida> getUnidades() {
 		return unidadMedidaService.getUnidadesMedida();
 	}
 
-	@GetMapping("/unidades/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> find(@PathVariable int id) {
 		Optional<UnidadMedida> medida = null;
 		Map<String, Object> response = new HashMap<>();
@@ -55,7 +55,7 @@ public class UnidadMedidaController {
 		return new ResponseEntity<UnidadMedida>(medida.get(), HttpStatus.OK);
 	}
 
-	@PostMapping("/unidades")
+	@PostMapping()
 	public ResponseEntity<?> save(@RequestBody UnidadMedida medida) {
 		UnidadMedida medidaNueva = null;
 		Map<String, Object> response = new HashMap<>();
@@ -73,7 +73,7 @@ public class UnidadMedidaController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/unidades/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@RequestBody UnidadMedida medida, @PathVariable int id) {
 
 		UnidadMedida medidaActual = unidadMedidaService.findUnidadMedida(id).get();
@@ -100,7 +100,7 @@ public class UnidadMedidaController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/unidades/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable int id) {
 		UnidadMedida medida = unidadMedidaService.findUnidadMedida(id).get();
 		Map<String, Object> response = new HashMap<>();

@@ -35,7 +35,7 @@ import com.tienda.services.UploadFileService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/tienda")
+@RequestMapping("/api/mantenimiento/productos")
 public class ProductoController {
 
 	@Autowired
@@ -44,17 +44,17 @@ public class ProductoController {
 	@Autowired
 	private UploadFileService uploadFileService;
 
-	@GetMapping("/productos")
+	@GetMapping()
 	public List<Producto> findAll() {
 		return productoService.getProductos();
 	}
 
-	@GetMapping("/productos/categorias/{categoria}")
-	public List<Producto> findAll(@PathVariable String categoria) {
+	@GetMapping("/categorias/{categoria}")
+	public List<Producto> findAll(@PathVariable int categoria) {
 		return productoService.getProductos(categoria);
 	}
 
-	@GetMapping("/productos/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> find(@PathVariable int id) {
 		Optional<Producto> producto = null;
 		Map<String, Object> response = new HashMap<>();
@@ -75,7 +75,7 @@ public class ProductoController {
 		return new ResponseEntity<Producto>(producto.get(), HttpStatus.OK);
 	}
 
-	// en 2 formularios
+	// <!-- Este codigo puede servir
 	@PostMapping("/productos-foto")
 	public ResponseEntity<?> cargar(@RequestParam("foto") MultipartFile foto, @RequestParam("id") int id)
 			throws IOException {
@@ -113,9 +113,10 @@ public class ProductoController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+	//-->
 
-	// en el formulario
-	@PostMapping("/productos/crear")
+	
+	@PostMapping()
 	public ResponseEntity<?> save(Producto producto, @RequestParam(name = "foto") MultipartFile foto)
 			throws IOException {
 		Producto productoNuevo = null;
@@ -138,6 +139,8 @@ public class ProductoController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
+	//Para enviar un producto sin foto
+	//<--inicio
 	@PostMapping("/productos")
 	public ResponseEntity<?> save(@RequestBody Producto producto) {
 		Producto productoNuevo = null;
@@ -157,8 +160,9 @@ public class ProductoController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
+	//fin-->
 
-	@PutMapping("/productos/editar/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> update( Producto producto,@RequestParam(name = "foto") MultipartFile foto) throws IOException {
 		Optional<Producto> optionalActual = productoService.findById(producto.getId());
 		Map<String, Object> response = new HashMap<>();
@@ -201,6 +205,7 @@ public class ProductoController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
+	//para editar solo el producto sin foto
 	@PutMapping("/productos/{id}")
 	public ResponseEntity<?> update2(@RequestBody Producto producto, @PathVariable int id) {
 		Optional<Producto> optionalActual = productoService.findById(id);
@@ -237,7 +242,7 @@ public class ProductoController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/productos/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable int id) {
 		Producto producto = productoService.findById(id).get();
 		Map<String, Object> response = new HashMap<>();
@@ -258,7 +263,7 @@ public class ProductoController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 	}
 
-	@GetMapping("/images/img/{foto:.+}")
+	@GetMapping("/img/{foto:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String foto) {
 		Path ruta = Paths.get("images").resolve(foto).toAbsolutePath();
 		Resource recurso = null;

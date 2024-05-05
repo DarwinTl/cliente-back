@@ -23,18 +23,18 @@ import com.tienda.entities.Categoria;
 import com.tienda.services.ICategoriaService;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/tienda")
+@RequestMapping("/api/mantenimiento/categorias")
 public class CategoriaController {
 
 	@Autowired
 	private ICategoriaService categoriaService;
 
-	@GetMapping("/categorias")
+	@GetMapping()
 	public List<Categoria> getCategorias() {
 		return categoriaService.findAll();
 	}
 
-	@GetMapping("/categorias/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> find(@PathVariable int id) {
 		Optional<Categoria> categoria = null;
 		Map<String, Object> response = new HashMap<>();
@@ -54,7 +54,7 @@ public class CategoriaController {
 		return new ResponseEntity<Categoria>(categoria.get(), HttpStatus.OK);
 	}
 
-	@PostMapping("/categorias")
+	@PostMapping()
 	public ResponseEntity<?> save(@RequestBody Categoria categoria) {
 		Categoria categoriaNueva = null;
 		Map<String, Object> response = new HashMap<>();
@@ -73,7 +73,7 @@ public class CategoriaController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/categorias/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> update(@RequestBody Categoria categoria, @PathVariable int id) {
 
 		Optional<Categoria> optionalActual = categoriaService.findById(id);
@@ -100,7 +100,7 @@ public class CategoriaController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/categorias/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable int id) {
 		Optional<Categoria> categoria = categoriaService.findById(id);
 		Map<String, Object> response = new HashMap<>();

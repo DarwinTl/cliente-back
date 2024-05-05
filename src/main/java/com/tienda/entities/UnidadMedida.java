@@ -8,14 +8,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ttunid_medi")
+@Table(name = "unidades_medidas")
 public class UnidadMedida {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_unid_medi")
 	private int id;
-	@Column(name = "de_unid_medi", unique = true)
+	@Column( unique = true)
 	private String descripcion;
 
 	public int getId() {

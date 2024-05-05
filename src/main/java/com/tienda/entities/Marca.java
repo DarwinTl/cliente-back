@@ -8,16 +8,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ttmarc")
+@Table(name = "marcas")
 public class Marca {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_marc")
 	private int id;
-	@Column(name = "no_marc",  unique = true)
+	@Column( unique = true)
 	private String nombre;
-	@Column(name = "de_marc")
+
 	private String detalle;
 
 	public int getId() {

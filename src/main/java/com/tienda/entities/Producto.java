@@ -10,20 +10,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tmprod")
+@Table(name = "productos")
 public class Producto {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_prod")
 	private int id;
-	@Column(name = "no_prod", unique = true)
+	@Column( unique = true)
 	private String nombre;
-	@Column(name = "de_prod")
 	private String descripcion;
-	@Column(name = "de_ruta_imag")
-	private String ruta;
-	@Column(name = "id_esta")
+	private String foto;
 	private int estado;
 	@ManyToOne
 	@JoinColumn(name = "id_marc")
@@ -60,11 +56,11 @@ public class Producto {
 	}
 
 	public String getRuta() {
-		return ruta;
+		return foto;
 	}
 
 	public void setRuta(String ruta) {
-		this.ruta = ruta;
+		this.foto = ruta;
 	}
 
 	public int getEstado() {
@@ -108,7 +104,7 @@ public class Producto {
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
-		this.ruta = ruta;
+		this.foto = ruta;
 		this.estado = estado;
 		this.marca = marca;
 		this.categoria = categoria;

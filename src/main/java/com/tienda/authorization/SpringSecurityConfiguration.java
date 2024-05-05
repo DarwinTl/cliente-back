@@ -44,7 +44,7 @@ public class SpringSecurityConfiguration {
 			
 			return http.authorizeHttpRequests( auth ->
  					auth
- 					.requestMatchers(/*HttpMethod.GET,"/tienda/productos",*/HttpMethod.GET, "/tienda/categorias","/tienda/images/img/**","/images/**").permitAll()
+ 					.requestMatchers(/*HttpMethod.GET,"/tienda/productos",*/HttpMethod.GET, "/tienda/categorias","/tienda/images/img/**","/images/**","/swagger-ui/index.html#").permitAll()
  				//	.requestMatchers(HttpMethod.GET, "/tienda/categorias").hasRole("ADMIN")
  					.requestMatchers(HttpMethod.GET, "/tienda/productos").hasRole("ADMIN")
  					.requestMatchers(HttpMethod.POST, "/tienda/categorias").hasRole("ADMIN")
