@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +54,11 @@ public class ProductoController {
 	@GetMapping("/categorias/{categoria}")
 	public List<Producto> findAll(@PathVariable int categoria) {
 		return productoService.getProductos(categoria);
+	}
+
+	@GetMapping("/pagina/{page}")
+	public Page<Producto> listar(@PathVariable Integer page,@PathVariable int cantidad) {
+		return productoService.findAll(PageRequest.of(page, 2));
 	}
 
 	@GetMapping("/{id}")
@@ -113,9 +120,8 @@ public class ProductoController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-	//-->
+	// -->
 
-	
 	@PostMapping()
 	public ResponseEntity<?> save(Producto producto, @RequestParam(name = "foto") MultipartFile foto)
 			throws IOException {
@@ -133,14 +139,14 @@ public class ProductoController {
 		}
 
 		response.put("mensaje", "Producto registrado");
-		
+
 		response.put("producto", productoNuevo);
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	//Para enviar un producto sin foto
-	//<--inicio
+	// Para enviar un producto sin foto
+	// <--inicio
 	@PostMapping("/productos")
 	public ResponseEntity<?> save(@RequestBody Producto producto) {
 		Producto productoNuevo = null;
@@ -160,10 +166,11 @@ public class ProductoController {
 
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
-	//fin-->
+	// fin-->
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update( Producto producto,@RequestParam(name = "foto") MultipartFile foto) throws IOException {
+	public ResponseEntity<?> update(Producto producto, @RequestParam(name = "foto") MultipartFile foto)
+			throws IOException {
 		Optional<Producto> optionalActual = productoService.findById(producto.getId());
 		Map<String, Object> response = new HashMap<>();
 		Producto productoActualizado = null;
@@ -205,7 +212,7 @@ public class ProductoController {
 		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 	}
 
-	//para editar solo el producto sin foto
+	// para editar solo el producto sin foto
 	@PutMapping("/productos/{id}")
 	public ResponseEntity<?> update2(@RequestBody Producto producto, @PathVariable int id) {
 		Optional<Producto> optionalActual = productoService.findById(id);

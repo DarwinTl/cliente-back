@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tienda.entities.Categoria;
@@ -33,6 +35,11 @@ public class CategoriaServiceImp implements ICategoriaService {
 	@Override
 	public void deleteById(int id) {
 		categoriaDao.deleteById(id);
+	}
+
+	@Override
+	public Page<Categoria> findAll(Pageable pageable) {
+		return categoriaDao.findAll(pageable);
 	}
 
 }

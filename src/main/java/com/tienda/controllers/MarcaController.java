@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,6 +34,11 @@ public class MarcaController {
 	@GetMapping()
 	public List<Marca> getMarcas() {
 		return marcaService.getMarcas();
+	}
+	
+	@GetMapping("/pagina/{page}")
+	public Page<Marca> listar(@PathVariable Integer page, @PathVariable int cantidad) {
+		return marcaService.findAll(PageRequest.of(page, 2));
 	}
 
 	@GetMapping("/{id}")

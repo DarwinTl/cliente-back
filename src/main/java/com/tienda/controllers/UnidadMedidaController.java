@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,6 +34,11 @@ public class UnidadMedidaController {
 	@GetMapping()
 	public List<UnidadMedida> getUnidades() {
 		return unidadMedidaService.getUnidadesMedida();
+	}
+	
+	@GetMapping("/pagina/{page}")
+	public Page<UnidadMedida> listar(@PathVariable Integer page, @PathVariable int cantidad) {
+		return unidadMedidaService.findAll(PageRequest.of(page, 2));
 	}
 
 	@GetMapping("/{id}")

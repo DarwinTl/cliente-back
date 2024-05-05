@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.tienda.entities.Producto;
@@ -39,6 +41,11 @@ public class ProductoServiceImp implements IProductoService {
 	@Override
 	public List<Producto> getProductos(int categoria) {
 		return productoDao.listByCategoria(categoria);
+	}
+
+	@Override
+	public Page<Producto> findAll(Pageable pageable) {
+		return productoDao.findAll(pageable);
 	}
 
 }
